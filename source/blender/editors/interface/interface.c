@@ -661,8 +661,17 @@ static float ui_but_get_float_precision(uiBut *but)
   return but->a2;
 }
 
+static bool ui_but_hide_fraction(uiBut *but, double value)
+{
+  return (but->drawflag & UI_BUT_HIDE_NULL_FRACTION) && floor(value) == value;
+}
+
 static int ui_but_calc_float_precision(uiBut *but, double value)
 {
+  if (ui_but_hide_fraction(but, value)) {
+    return 0;
+  }
+
   int prec = (int)ui_but_get_float_precision(but);
 
   /* first check for various special cases:
@@ -2813,8 +2822,11 @@ void ui_but_string_get_ex(uiBut *but,
     }
 
     if (ui_but_is_float(but)) {
-      int prec = (float_precision == -1) ? ui_but_calc_float_precision(but, value) :
-                                           float_precision;
+      int prec = float_precision;
+
+      if (float_precision == -1 || (!use_exp_float && ui_but_hide_fraction(but, value))) {
+        prec = ui_but_calc_float_precision(but, value);
+      }
 
       if (ui_but_is_unit(but)) {
         ui_get_but_string_unit(but, str, maxlen, value, false, prec);
@@ -4569,6 +4581,10 @@ static uiBut *ui_def_but_rna(uiBlock *block,
     /* Set default values, can be overridden later. */
     UI_but_number_step_size_set(but, a1);
     UI_but_number_precision_set(but, a2);
+
+    if (RNA_property_flag(prop) & PROP_HIDE_NULL_FRACTION) {
+      but->drawflag |= UI_BUT_HIDE_NULL_FRACTION;
+    }
   }
 
   but->rnapoin = *ptr;

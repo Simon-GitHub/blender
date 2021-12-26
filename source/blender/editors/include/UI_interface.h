@@ -311,6 +311,9 @@ enum {
 
   /* Draw the checkbox buttons inverted. */
   UI_BUT_CHECKBOX_INVERT = 1 << 25,
+
+  /** Hide float fraction if the value is an exact integer. */
+  UI_BUT_HIDE_NULL_FRACTION = 1 << 26,
 };
 
 /* scale fixed button widths by this to account for DPI */

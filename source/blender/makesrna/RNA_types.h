@@ -193,7 +193,7 @@ typedef enum PropertySubType {
 
 /* Make sure enums are updated with these */
 /* HIGHEST FLAG IN USE: 1 << 31
- * FREE FLAGS: 2, 9, 11, 13, 14, 15, 30 */
+ * FREE FLAGS: 2, 9, 11, 13, 14 */
 typedef enum PropertyFlag {
   /**
    * Editable means the property is editable in the user
@@ -235,6 +235,9 @@ typedef enum PropertyFlag {
 
   /** Each value is related proportionally (object scale, image size). */
   PROP_PROPORTIONAL = (1 << 26),
+
+  /** When a float property value is an exact integer, hide the fraction. */
+  PROP_HIDE_NULL_FRACTION = (1 << 15),
 
   /* pointers */
   PROP_ID_REFCOUNT = (1 << 6),
